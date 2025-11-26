@@ -1,51 +1,33 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Entradas Movom</title>
+
+<!-- Firebase App -->
+<script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js"></script>
+<!-- Firebase Realtime Database -->
+<script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js"></script>
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background: #E6E6FA;
-        color: #333;
-        padding: 20px;
-    }
-    h1 { color: #8A2BE2; text-align: center; }
-    h2 { color: #8A2BE2; margin-top: 30px; }
-    select, input, button {
-        padding: 10px;
-        margin: 5px 0;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        font-size: 14px;
-    }
-    button {
-        background-color: #00FFFF;
-        color: #000;
-        cursor: pointer;
-        border: none;
-        font-weight: bold;
-        transition: 0.3s;
-    }
-    button:hover { opacity: 0.8; }
-    .card {
-        background-color: #F0F8FF;
-        border: 1px solid #8A2BE2;
-        border-radius: 10px;
-        padding: 15px;
-        margin-bottom: 20px;
-        box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
-    }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
-    th { background-color: #8A2BE2; color: white; }
-    tr:nth-child(even) { background-color: #E0FFFF; }
-    tr:nth-child(odd) { background-color: #F8F8FF; }
-    .total { font-size: 18px; font-weight: bold; color: #8A2BE2; margin-top: 10px; }
-    .btn-danger { background-color: #FF69B4; color: #fff; }
-    canvas { margin-top: 20px; background-color: #FFF; border-radius: 10px; padding: 10px; }
+body { font-family: Arial, sans-serif; background: #E6E6FA; color: #333; padding: 20px; }
+h1 { color: #8A2BE2; text-align: center; }
+h2 { color: #8A2BE2; margin-top: 30px; }
+select, input, button { padding: 10px; margin: 5px 0; border-radius: 5px; border: 1px solid #ccc; font-size: 14px; }
+button { background-color: #00FFFF; color: #000; cursor: pointer; border: none; font-weight: bold; transition: 0.3s; }
+button:hover { opacity: 0.8; }
+.card { background-color: #F0F8FF; border: 1px solid #8A2BE2; border-radius: 10px; padding: 15px; margin-bottom: 20px; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+th { background-color: #8A2BE2; color: white; }
+tr:nth-child(even) { background-color: #E0FFFF; }
+tr:nth-child(odd) { background-color: #F8F8FF; }
+.total { font-size: 18px; font-weight: bold; color: #8A2BE2; margin-top: 10px; }
+.btn-danger { background-color: #FF69B4; color: #fff; }
+canvas { margin-top: 20px; background-color: #FFF; border-radius: 10px; padding: 10px; }
 </style>
 </head>
 <body>
@@ -58,156 +40,176 @@
 </div>
 
 <div class="card">
-    <h2>Adicionar Pagamento</h2>
-    <input type="text" id="nome" placeholder="Nome do aluno">
-    <input type="text" id="cpf" placeholder="CPF/CNPJ">
-    <select id="servico">
-        <option>Fisioterapia</option>
-        <option>Pilates</option>
-        <option>Yoga</option>
-        <option>Outros</option>
-    </select>
-    <input type="number" id="valor" placeholder="Valor">
-    <select id="pagamento">
-        <option>Crédito</option>
-        <option>Débito</option>
-        <option>Dinheiro</option>
-        <option>Pix</option>
-    </select>
-    <br>
-    <button onclick="adicionarPagamento()">Adicionar</button>
-    <button class="btn-danger" onclick="apagarUltimo()">Apagar Último</button>
-    <button class="btn-danger" onclick="limparMes()">Limpar Mês</button>
+<h2>Adicionar Pagamento</h2>
+<input type="text" id="nome" placeholder="Nome do aluno">
+<input type="text" id="cpf" placeholder="CPF/CNPJ">
+<select id="servico">
+    <option>Fisioterapia</option>
+    <option>Pilates</option>
+    <option>Yoga</option>
+    <option>Outros</option>
+</select>
+<input type="number" id="valor" placeholder="Valor">
+<select id="pagamento">
+    <option>Crédito</option>
+    <option>Débito</option>
+    <option>Dinheiro</option>
+    <option>Pix</option>
+</select>
+<input type="text" id="nf" placeholder="NF (opcional)">
+<br>
+<button onclick="adicionarPagamento()">Adicionar</button>
+<button class="btn-danger" onclick="apagarUltimo()">Apagar Último</button>
 </div>
 
 <div class="card">
-    <h2>Histórico de Pagamentos</h2>
-    <div class="total" id="totalFaturamento">Total do Mês: R$ 0</div>
-    <table>
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>CPF/CNPJ</th>
-                <th>Serviço</th>
-                <th>Valor</th>
-                <th>Pagamento</th>
-            </tr>
-        </thead>
-        <tbody id="tabelaBody"></tbody>
-    </table>
+<h2>Histórico de Pagamentos</h2>
+<div class="total" id="totalFaturamento">Total do Mês: R$ 0</div>
+<table>
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>CPF/CNPJ</th>
+            <th>Serviço</th>
+            <th>Valor</th>
+            <th>Pagamento</th>
+            <th>NF</th>
+            <th>Data</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody id="tabelaBody"></tbody>
+</table>
 </div>
 
 <div class="card">
-    <h2>Gráfico de Faturamento</h2>
-    <canvas id="graficoTotal"></canvas>
-    <canvas id="graficoFormaPagamento"></canvas>
+<h2>Gráfico de Faturamento</h2>
+<canvas id="graficoTotal"></canvas>
+<canvas id="graficoFormaPagamento"></canvas>
 </div>
 
 <script>
-const meses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-const mesSelect = document.getElementById("mesSelect");
-const tabelaBody = document.getElementById("tabelaBody");
-const totalFaturamento = document.getElementById("totalFaturamento");
+  const firebaseConfig = {
+    apiKey: "AIzaSyAiaiPHw98hV9yPt1M8mN-2ZC62TVUG6Lk",
+    authDomain: "movomentradas.firebaseapp.com",
+    databaseURL: "https://movomentradas-default-rtdb.firebaseio.com",
+    projectId: "movomentradas",
+    storageBucket: "movomentradas.firebasestorage.app",
+    messagingSenderId: "5423221990",
+    appId: "1:5423221990:web:29a72ef5e6cad1e3afff27"
+  };
 
-let graficoTotal, graficoFormaPagamento;
+  const app = firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 
-meses.forEach((m, i) => {
-    const option = document.createElement("option");
-    option.value = m;
-    option.textContent = m;
-    if (i === new Date().getMonth()) option.selected = true;
-    mesSelect.appendChild(option);
-});
+  const meses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+  const mesSelect = document.getElementById("mesSelect");
+  const tabelaBody = document.getElementById("tabelaBody");
+  const totalFaturamento = document.getElementById("totalFaturamento");
 
-mesSelect.addEventListener("change", carregarHistorico);
+  let graficoTotal, graficoFormaPagamento;
+  let mesAtual = meses[new Date().getMonth()];
 
-function getStorageKey() { return `studio_${mesSelect.value}`; }
+  meses.forEach((m,i)=>{
+    const opt = document.createElement("option");
+    opt.value = m;
+    opt.textContent = m;
+    if(i === new Date().getMonth()) opt.selected = true;
+    mesSelect.appendChild(opt);
+  });
 
-function carregarHistorico() {
-    tabelaBody.innerHTML = "";
-    const data = JSON.parse(localStorage.getItem(getStorageKey()) || "[]");
-    let total = 0;
-    const formas = {Crédito:0, Débito:0, Dinheiro:0, Pix:0};
+  mesSelect.addEventListener("change",()=>{
+    mesAtual = mesSelect.value;
+    carregarHistorico();
+  });
 
-    data.forEach(p => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${p.nome}</td><td>${p.cpf}</td><td>${p.servico}</td><td>R$ ${parseFloat(p.valor).toFixed(2)}</td><td>${p.pagamento}</td>`;
-        tabelaBody.appendChild(tr);
-        total += parseFloat(p.valor);
-        if(formas[p.pagamento] !== undefined) formas[p.pagamento] += parseFloat(p.valor);
-    });
+  function getDbRef(){ return db.ref('pagamentos/'+mesAtual); }
 
-    totalFaturamento.textContent = `Total do Mês: R$ ${total.toFixed(2)}`;
-    atualizarGraficos(total, formas);
-}
-
-function adicionarPagamento() {
+  function adicionarPagamento(){
     const nome = document.getElementById("nome").value.trim();
     const cpf = document.getElementById("cpf").value.trim();
     const servico = document.getElementById("servico").value;
-    const valor = document.getElementById("valor").value;
+    const valor = parseFloat(document.getElementById("valor").value);
     const pagamento = document.getElementById("pagamento").value;
+    const nf = document.getElementById("nf").value.trim();
+    const data = new Date().toLocaleString("pt-BR");
 
-    if(!nome || !cpf || !valor) { alert("Preencha todos os campos!"); return; }
+    if(!nome||!cpf||!valor){ alert("Preencha todos os campos!"); return; }
 
-    const data = JSON.parse(localStorage.getItem(getStorageKey()) || "[]");
-    data.push({nome, cpf, servico, valor, pagamento});
-    localStorage.setItem(getStorageKey(), JSON.stringify(data));
-    carregarHistorico();
+    getDbRef().push({nome,cpf,servico,valor,pagamento,nf,data});
+    document.getElementById("nome").value="";
+    document.getElementById("cpf").value="";
+    document.getElementById("valor").value="";
+    document.getElementById("nf").value="";
+  }
 
-    document.getElementById("nome").value = "";
-    document.getElementById("cpf").value = "";
-    document.getElementById("valor").value = "";
-}
+  function apagarUltimo(){
+    getDbRef().once('value', snapshot=>{
+      const data = snapshot.val();
+      if(!data){ alert("Nenhum registro para apagar"); return; }
+      const keys = Object.keys(data);
+      const lastKey = keys[keys.length-1];
+      db.ref('pagamentos/'+mesAtual+'/'+lastKey).remove();
+    });
+  }
 
-function apagarUltimo() {
-    const data = JSON.parse(localStorage.getItem(getStorageKey()) || "[]");
-    if(data.length === 0) return alert("Nenhum registro para apagar");
-    data.pop();
-    localStorage.setItem(getStorageKey(), JSON.stringify(data));
-    carregarHistorico();
-}
+  function apagarIndividual(key){
+    db.ref('pagamentos/'+mesAtual+'/'+key).remove();
+  }
 
-function limparMes() {
-    if(confirm("Tem certeza que deseja limpar todos os registros deste mês?")) {
-        localStorage.removeItem(getStorageKey());
-        carregarHistorico();
-    }
-}
+  function carregarHistorico(){
+    getDbRef().on('value', snapshot=>{
+      tabelaBody.innerHTML="";
+      const data = snapshot.val();
+      const formas = {Crédito:0,Débito:0,Dinheiro:0,Pix:0};
+      let total=0;
+      if(data){
+        Object.entries(data).forEach(([key,p])=>{
+          const tr = document.createElement("tr");
+          tr.innerHTML=`
+            <td>${p.nome}</td>
+            <td>${p.cpf}</td>
+            <td>${p.servico}</td>
+            <td>R$ ${p.valor.toFixed(2)}</td>
+            <td>${p.pagamento}</td>
+            <td>${p.nf || ""}</td>
+            <td>${p.data}</td>
+            <td><button onclick="apagarIndividual('${key}')">Excluir</button></td>
+          `;
+          tabelaBody.appendChild(tr);
+          total+=p.valor;
+          if(formas[p.pagamento]!==undefined) formas[p.pagamento]+=p.valor;
+        });
+      }
+      totalFaturamento.textContent=`Total do Mês: R$ ${total.toFixed(2)}`;
+      atualizarGraficos(total,formas);
+    });
+  }
 
-function atualizarGraficos(total, formas) {
-    const ctxTotal = document.getElementById('graficoTotal').getContext('2d');
-    const ctxFormas = document.getElementById('graficoFormaPagamento').getContext('2d');
+  function atualizarGraficos(total,formas){
+    const ctxTotal=document.getElementById("graficoTotal").getContext("2d");
+    const ctxFormas=document.getElementById("graficoFormaPagamento").getContext("2d");
 
     if(graficoTotal) graficoTotal.destroy();
     if(graficoFormaPagamento) graficoFormaPagamento.destroy();
 
-    graficoTotal = new Chart(ctxTotal, {
-        type: 'bar',
-        data: {
-            labels: [mesSelect.value],
-            datasets: [{ label: 'Total do Mês (R$)', data: [total], backgroundColor: '#8A2BE2' }]
-        },
-        options: { responsive:true, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true } } }
+    graficoTotal = new Chart(ctxTotal,{
+      type:'bar',
+      data:{labels:[mesAtual],datasets:[{label:'Total do Mês (R$)',data:[total],backgroundColor:'#8A2BE2'}]},
+      options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
     });
 
-    graficoFormaPagamento = new Chart(ctxFormas, {
-        type: 'pie',
-        data: {
-            labels: Object.keys(formas),
-            datasets: [{
-                label: 'Por Forma de Pagamento',
-                data: Object.values(formas),
-                backgroundColor: ['#00FFFF','#8A2BE2','#FF69B4','#FFD700']
-            }]
-        },
-        options: { responsive:true }
+    graficoFormaPagamento = new Chart(ctxFormas,{
+      type:'pie',
+      data:{labels:Object.keys(formas),datasets:[{label:'Por Forma de Pagamento',data:Object.values(formas),backgroundColor:['#00FFFF','#8A2BE2','#FF69B4','#FFD700']}]},
+      options:{responsive:true}
     });
-}
+  }
 
-// Inicializa
-carregarHistorico();
+  carregarHistorico();
 </script>
 
 </body>
 </html>
+
+
