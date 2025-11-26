@@ -100,75 +100,83 @@ const firebaseConfig = {
 const app = firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-const meses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-const mesSelect = document.getElementById("mesSelect");
-const tabelaBody = document.getElementById("tabelaBody");
-const totalFaturamento = document.getElementById("totalFaturamento");
-
 let graficoTotal, graficoFormaPagamento;
+let mesAtual;
 
-// Preenche select de meses
-meses.forEach((m,i)=>{
-  const opt = document.createElement("option");
-  opt.value = m;
-  opt.textContent = m;
-  mesSelect.appendChild(opt);
-});
+document.addEventListener("DOMContentLoaded", () => {
+  const meses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+  const mesSelect = document.getElementById("mesSelect");
 
-// Define o mês atual e carrega histórico
-let mesAtual = meses[new Date().getMonth()];
-mesSelect.value = mesAtual;
-carregarHistorico();
+  meses.forEach((m) => {
+    const opt = document.createElement("option");
+    opt.value = m;
+    opt.textContent = m;
+    mesSelect.appendChild(opt);
+  });
 
-mesSelect.addEventListener("change", ()=>{
-  mesAtual = mesSelect.value;
+  // Define o mês atual
+  mesAtual = meses[new Date().getMonth()];
+  mesSelect.value = mesAtual;
+
+  mesSelect.addEventListener("change", () => {
+    mesAtual = mesSelect.value;
+    carregarHistorico();
+  });
+
+  // Carrega histórico após o select estar preenchido
   carregarHistorico();
 });
 
-function getDbRef(){ return db.ref('pagamentos/'+mesAtual); }
+function getDbRef(){ return db.ref('pagamentos/' + mesAtual); }
 
-function adicionarPagamento(){
+function adicionarPagamento() {
   const nome = document.getElementById("nome").value.trim();
   const cpf = document.getElementById("cpf").value.trim();
-  const servico = document.getElementById("servico").value;
   const valor = parseFloat(document.getElementById("valor").value);
+  const servico = document.getElementById("servico").value;
   const pagamento = document.getElementById("pagamento").value;
   const nf = document.getElementById("nf").value.trim();
   const data = new Date().toLocaleString("pt-BR");
 
-  if(!nome || !cpf || !valor){ alert("Preencha todos os campos corretamente!"); return; }
+  if(!nome || !cpf || !valor){ 
+    alert("Preencha todos os campos corretamente!"); 
+    return; 
+  }
 
-  getDbRef().push({nome,cpf,servico,valor,pagamento,nf,data});
-  document.getElementById("nome").value="";
-  document.getElementById("cpf").value="";
-  document.getElementById("valor").value="";
-  document.getElementById("nf").value="";
+  getDbRef().push({nome, cpf, servico, valor, pagamento, nf, data});
+
+  document.getElementById("nome").value = "";
+  document.getElementById("cpf").value = "";
+  document.getElementById("valor").value = "";
+  document.getElementById("nf").value = "";
 }
 
-function apagarUltimo(){
-  getDbRef().once('value', snapshot=>{
+function apagarUltimo() {
+  getDbRef().once('value', snapshot => {
     const data = snapshot.val();
     if(!data){ alert("Nenhum registro para apagar"); return; }
     const keys = Object.keys(data);
-    const lastKey = keys[keys.length-1];
-    db.ref('pagamentos/'+mesAtual+'/'+lastKey).remove();
+    const lastKey = keys[keys.length - 1];
+    db.ref('pagamentos/' + mesAtual + '/' + lastKey).remove();
   });
 }
 
-function apagarIndividual(key){
-  db.ref('pagamentos/'+mesAtual+'/'+key).remove();
+function apagarIndividual(key) {
+  db.ref('pagamentos/' + mesAtual + '/' + key).remove();
 }
 
-function carregarHistorico(){
-  getDbRef().on('value', snapshot=>{
-    tabelaBody.innerHTML="";
+function carregarHistorico() {
+  getDbRef().on('value', snapshot => {
+    const tabelaBody = document.getElementById("tabelaBody");
+    tabelaBody.innerHTML = "";
     const data = snapshot.val();
     const formas = {Crédito:0,Débito:0,Dinheiro:0,Pix:0};
-    let total=0;
+    let total = 0;
+
     if(data){
       Object.entries(data).forEach(([key,p])=>{
         const tr = document.createElement("tr");
-        tr.innerHTML=`
+        tr.innerHTML = `
           <td>${p.nome}</td>
           <td>${p.cpf}</td>
           <td>${p.servico}</td>
@@ -183,25 +191,26 @@ function carregarHistorico(){
         if(formas[p.pagamento] !== undefined) formas[p.pagamento] += p.valor;
       });
     }
-    totalFaturamento.textContent=`Total do Mês: R$ ${total.toFixed(2)}`;
-    atualizarGraficos(total,formas);
+
+    document.getElementById("totalFaturamento").textContent = `Total do Mês: R$ ${total.toFixed(2)}`;
+    atualizarGraficos(total, formas);
   });
 }
 
-function atualizarGraficos(total,formas){
-  const ctxTotal=document.getElementById("graficoTotal").getContext("2d");
-  const ctxFormas=document.getElementById("graficoFormaPagamento").getContext("2d");
+function atualizarGraficos(total, formas) {
+  const ctxTotal = document.getElementById("graficoTotal").getContext("2d");
+  const ctxFormas = document.getElementById("graficoFormaPagamento").getContext("2d");
 
   if(graficoTotal) graficoTotal.destroy();
   if(graficoFormaPagamento) graficoFormaPagamento.destroy();
 
-  graficoTotal = new Chart(ctxTotal,{
+  graficoTotal = new Chart(ctxTotal, {
     type:'bar',
     data:{labels:[mesAtual],datasets:[{label:'Total do Mês (R$)',data:[total],backgroundColor:'#8A2BE2'}]},
     options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
   });
 
-  graficoFormaPagamento = new Chart(ctxFormas,{
+  graficoFormaPagamento = new Chart(ctxFormas, {
     type:'pie',
     data:{labels:Object.keys(formas),datasets:[{label:'Por Forma de Pagamento',data:Object.values(formas),backgroundColor:['#00FFFF','#8A2BE2','#FF69B4','#FFD700']}]},
     options:{responsive:true}
