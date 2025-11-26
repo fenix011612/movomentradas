@@ -106,16 +106,19 @@ const tabelaBody = document.getElementById("tabelaBody");
 const totalFaturamento = document.getElementById("totalFaturamento");
 
 let graficoTotal, graficoFormaPagamento;
-let mesAtual = meses[new Date().getMonth()];
 
 // Preenche select de meses
 meses.forEach((m,i)=>{
   const opt = document.createElement("option");
   opt.value = m;
   opt.textContent = m;
-  if(i === new Date().getMonth()) opt.selected = true;
   mesSelect.appendChild(opt);
 });
+
+// Define o mês atual e carrega histórico
+let mesAtual = meses[new Date().getMonth()];
+mesSelect.value = mesAtual;
+carregarHistorico();
 
 mesSelect.addEventListener("change", ()=>{
   mesAtual = mesSelect.value;
@@ -204,9 +207,9 @@ function atualizarGraficos(total,formas){
     options:{responsive:true}
   });
 }
-
-carregarHistorico();
 </script>
 
 </body>
 </html>
+
+
