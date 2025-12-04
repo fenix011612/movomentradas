@@ -5,7 +5,6 @@
 <title>Entradas MOVOM</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- Estilo moderno lilás + azul ciano -->
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -78,6 +77,12 @@
         cursor: pointer;
         border: none;
     }
+    .nf-input {
+        width: 90px;
+        padding: 4px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+    }
 </style>
 </head>
 <body>
@@ -94,14 +99,18 @@
     <label>Nome:</label>
     <input id="nome">
 
+    <label>Gmail do aluno:</label>
+    <input id="gmail">
+
     <label>CPF/CNPJ:</label>
     <input id="cpf">
 
     <label>Atividade:</label>
     <select id="atividade">
         <option>Pilates</option>
-        <option>Fisioterapia</option>
         <option>Yoga</option>
+        <option>Pilates/Yoga</option>
+        <option>Fisioterapia</option>
         <option>Outros</option>
     </select>
 
@@ -126,9 +135,12 @@
         <thead>
             <tr>
                 <th>Nome</th>
+                <th>CPF/CNPJ</th>
                 <th>Atividade</th>
+                <th>Pagamento</th>
                 <th>Valor</th>
-                <th>Data</th>
+                <th>Data/Hora</th>
+                <th>NF (editável)</th>
                 <th>Excluir</th>
             </tr>
         </thead>
@@ -137,12 +149,12 @@
 
 </div>
 
-<!-- Firebase (modo SCRIPT — NÃO QUEBRA NO NAVEGADOR) -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
 <script>
-// CONFIG REALTIME DATABASE
+// FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyAiaiPHw98hV9yPt1M8mN-2ZC62TVUG6Lk",
   authDomain: "movomentradas.firebaseapp.com",
@@ -156,12 +168,12 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-//-----------------------------
 // CARREGAR MESES
-//-----------------------------
 const mesSelect = document.getElementById("mesSelect");
-const meses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho",
-"Agosto","Setembro","Outubro","Novembro","Dezembro"];
+const meses = [
+    "Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho",
+    "Agosto","Setembro","Outubro","Novembro","Dezembro"
+];
 
 meses.forEach((m) => {
     const op = document.createElement("option");
@@ -170,17 +182,15 @@ meses.forEach((m) => {
     mesSelect.appendChild(op);
 });
 
-// deixa mês atual selecionado
 mesSelect.value = meses[new Date().getMonth()];
 
-//-----------------------------
 // ADICIONAR ENTRADA
-//-----------------------------
 function addEntrada() {
     let mes = mesSelect.value;
 
     const dados = {
         nome: nome.value,
+        gmail: gmail.value,
         cpf: cpf.value,
         atividade: atividade.value,
         pagamento: pagamento.value,
@@ -190,16 +200,15 @@ function addEntrada() {
     };
 
     db.ref("entradas/" + mes).push(dados);
-    
+
     nome.value = "";
+    gmail.value = "";
     cpf.value = "";
     valor.value = "";
     nf.value  = "";
 }
 
-//-----------------------------
-// LISTAR ENTRADAS EM TEMPO REAL
-//-----------------------------
+// LISTAR ENTRADAS
 mesSelect.addEventListener("change", carregarTabela);
 
 function carregarTabela() {
@@ -216,9 +225,15 @@ function carregarTabela() {
             const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td>${e.nome}</td>
+                <td>${e.cpf}</td>
                 <td>${e.atividade}</td>
+                <td>${e.pagamento}</td>
                 <td>R$ ${e.valor}</td>
                 <td>${e.data}</td>
+                <td>
+                    <input class="nf-input" value="${e.nf || ""}" 
+                        onchange="updateNF('${mes}','${item.key}', this.value)">
+                </td>
                 <td><button class="delete-btn" onclick="del('${mes}','${item.key}')">X</button></td>
             `;
             tabela.appendChild(tr);
@@ -228,9 +243,12 @@ function carregarTabela() {
 
 carregarTabela();
 
-//-----------------------------
+// EDITAR NF
+function updateNF(mes, id, novoValor) {
+    db.ref("entradas/" + mes + "/" + id).update({ nf: novoValor });
+}
+
 // EXCLUIR REGISTRO
-//-----------------------------
 function del(mes, id) {
     db.ref("entradas/" + mes + "/" + id).remove();
 }
@@ -238,4 +256,5 @@ function del(mes, id) {
 
 </body>
 </html>
+
 
