@@ -6,155 +6,160 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background: #f3e9ff;
-        margin: 0;
-        padding: 0;
-    }
-    header {
-        background: linear-gradient(45deg, #a66bff, #40c8ff);
-        padding: 20px;
-        text-align: center;
-        color: white;
-        font-size: 26px;
-        font-weight: bold;
-    }
-    .container {
-        width: 96%;
-        max-width: 900px;
-        background: white;
-        margin: 25px auto;
-        padding: 20px;
-        border-radius: 15px;
-        box-shadow: 0 0 12px #00000022;
-    }
-    label {
-        font-weight: bold;
-        margin-top: 12px;
-        display: block;
-    }
-    input, select {
-        width: 100%;
-        padding: 8px;
-        margin-top: 5px;
-        border-radius: 8px;
-        border: 1px solid #999;
-    }
-    button {
-        margin-top: 15px;
-        width: 100%;
-        padding: 10px;
-        border: none;
-        background: #8f57ff;
-        color: white;
-        border-radius: 8px;
-        font-size: 16px;
-        cursor: pointer;
-    }
-    button:hover {
-        background: #7d4ceb;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 25px;
-    }
-    th, td {
-        padding: 10px;
-        border-bottom: 1px solid #ddd;
-        text-align: left;
-    }
-    th {
-        background: #a66bff;
-        color: white;
-    }
-    .delete-btn {
-        background: #ff4d4d;
-        padding: 6px 10px;
-        color: white;
-        border-radius: 6px;
-        cursor: pointer;
-        border: none;
-    }
-    .nf-input {
-        width: 90px;
-        padding: 4px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-    }
+body{
+    font-family: Arial, sans-serif;
+    background:#f3e9ff;
+    margin:0;
+    padding:0;
+}
+header{
+    background: linear-gradient(45deg,#a66bff,#40c8ff);
+    padding:20px;
+    text-align:center;
+    color:#fff;
+    font-size:26px;
+    font-weight:bold;
+}
+.container{
+    width:96%;
+    max-width:900px;
+    background:#fff;
+    margin:25px auto;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 0 12px #00000022;
+}
+label{
+    font-weight:bold;
+    margin-top:12px;
+    display:block;
+}
+input, select{
+    width:100%;
+    padding:8px;
+    margin-top:5px;
+    border-radius:8px;
+    border:1px solid #999;
+}
+button{
+    margin-top:15px;
+    width:100%;
+    padding:10px;
+    border:none;
+    background:#8f57ff;
+    color:#fff;
+    border-radius:8px;
+    font-size:16px;
+    cursor:pointer;
+}
+button:hover{
+    background:#7d4ceb;
+}
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:25px;
+}
+th, td{
+    padding:10px;
+    border-bottom:1px solid #ddd;
+    text-align:left;
+}
+th{
+    background:#a66bff;
+    color:#fff;
+}
+.delete-btn{
+    background:#ff4d4d;
+    padding:6px 10px;
+    color:#fff;
+    border-radius:6px;
+    border:none;
+    cursor:pointer;
+}
+.nf-input{
+    width:90px;
+    padding:4px;
+    border:1px solid #ccc;
+    border-radius:6px;
+}
+#totalMes{
+    margin-top:20px;
+    font-size:18px;
+    font-weight:bold;
+}
 </style>
 </head>
+
 <body>
 
 <header>Entradas MOVOM</header>
 
 <div class="container">
 
-    <!-- Seleção de mês -->
-    <label>Mês:</label>
-    <select id="mesSelect"></select>
+<label>Mês:</label>
+<select id="mesSelect"></select>
 
-    <!-- Formulário -->
-    <label>Nome:</label>
-    <input id="nome">
+<label>Nome:</label>
+<input id="nome">
 
-    <label>Gmail do aluno:</label>
-    <input id="gmail">
+<label>Gmail do aluno:</label>
+<input id="gmail">
 
-    <label>CPF/CNPJ:</label>
-    <input id="cpf">
+<label>CPF/CNPJ:</label>
+<input id="cpf">
 
-    <label>Atividade:</label>
-    <select id="atividade">
-        <option>Pilates</option>
-        <option>Yoga</option>
-        <option>Pilates/Yoga</option>
-        <option>Fisioterapia</option>
-        <option>Outros</option>
-    </select>
+<label>Atividade:</label>
+<select id="atividade">
+    <option>Pilates</option>
+    <option>Yoga</option>
+    <option>Pilates/Yoga</option>
+    <option>Fisioterapia</option>
+    <option>Outros</option>
+</select>
 
-    <label>Forma de Pagamento:</label>
-    <select id="pagamento">
-        <option>Pix</option>
-        <option>Dinheiro</option>
-        <option>Débito</option>
-        <option>Crédito</option>
-    </select>
+<label>Forma de Pagamento:</label>
+<select id="pagamento">
+    <option>Pix</option>
+    <option>Dinheiro</option>
+    <option>Débito</option>
+    <option>Crédito</option>
+</select>
 
-    <label>Valor R$:</label>
-    <input id="valor" type="number">
+<label>Valor R$:</label>
+<input id="valor" type="number">
 
-    <label>Nº da NF (opcional):</label>
-    <input id="nf">
+<label>Nº da NF (opcional):</label>
+<input id="nf">
 
-    <button onclick="addEntrada()">Adicionar Entrada</button>
+<button onclick="addEntrada()">Adicionar Entrada</button>
 
-    <!-- Tabela -->
-    <table>
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>CPF/CNPJ</th>
-                <th>Atividade</th>
-                <th>Pagamento</th>
-                <th>Valor</th>
-                <th>Data/Hora</th>
-                <th>NF (editável)</th>
-                <th>Excluir</th>
-            </tr>
-        </thead>
-        <tbody id="tabela"></tbody>
-    </table>
+<h3 id="totalMes">Total do mês: R$ 0,00</h3>
+
+<table>
+<thead>
+<tr>
+    <th>Nome</th>
+    <th>Gmail</th>
+    <th>CPF/CNPJ</th>
+    <th>Atividade</th>
+    <th>Pagamento</th>
+    <th>Valor</th>
+    <th>Data/Hora</th>
+    <th>NF</th>
+    <th>Excluir</th>
+</tr>
+</thead>
+<tbody id="tabela"></tbody>
+</table>
 
 </div>
 
-<!-- Firebase -->
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
 <script>
-// FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyAiaiPHw98hV9yPt1M8mN-2ZC62TVUG6Lk",
   authDomain: "movomentradas.firebaseapp.com",
@@ -168,93 +173,109 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// CARREGAR MESES
+let currentRef = null;
+
+// MESES
 const mesSelect = document.getElementById("mesSelect");
 const meses = [
-    "Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho",
-    "Agosto","Setembro","Outubro","Novembro","Dezembro"
+ "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+ "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
 ];
 
-meses.forEach((m) => {
-    const op = document.createElement("option");
-    op.value = m;
-    op.textContent = m;
-    mesSelect.appendChild(op);
+meses.forEach(m=>{
+ const op = document.createElement("option");
+ op.value = m;
+ op.textContent = m;
+ mesSelect.appendChild(op);
 });
 
 mesSelect.value = meses[new Date().getMonth()];
-
-// ADICIONAR ENTRADA
-function addEntrada() {
-    let mes = mesSelect.value;
-
-    const dados = {
-        nome: nome.value,
-        gmail: gmail.value,
-        cpf: cpf.value,
-        atividade: atividade.value,
-        pagamento: pagamento.value,
-        valor: valor.value,
-        nf: nf.value,
-        data: new Date().toLocaleString("pt-BR")
-    };
-
-    db.ref("entradas/" + mes).push(dados);
-
-    nome.value = "";
-    gmail.value = "";
-    cpf.value = "";
-    valor.value = "";
-    nf.value  = "";
-}
-
-// LISTAR ENTRADAS
 mesSelect.addEventListener("change", carregarTabela);
 
-function carregarTabela() {
-    let mes = mesSelect.value;
-    const tabela = document.getElementById("tabela");
-    tabela.innerHTML = "";
+// ADICIONAR
+function addEntrada(){
+ const mes = mesSelect.value;
 
-    db.ref("entradas/" + mes).on("value", (snapshot) => {
-        tabela.innerHTML = "";
+ const dados = {
+  nome: nome.value,
+  gmail: gmail.value,
+  cpf: cpf.value,
+  atividade: atividade.value,
+  pagamento: pagamento.value,
+  valor: Number(valor.value || 0),
+  nf: nf.value,
+  data: new Date().toLocaleString("pt-BR")
+ };
 
-        snapshot.forEach((item) => {
-            const e = item.val();
+ db.ref("entradas/" + mes).push(dados);
 
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-                <td>${e.nome}</td>
-                <td>${e.cpf}</td>
-                <td>${e.atividade}</td>
-                <td>${e.pagamento}</td>
-                <td>R$ ${e.valor}</td>
-                <td>${e.data}</td>
-                <td>
-                    <input class="nf-input" value="${e.nf || ""}" 
-                        onchange="updateNF('${mes}','${item.key}', this.value)">
-                </td>
-                <td><button class="delete-btn" onclick="del('${mes}','${item.key}')">X</button></td>
-            `;
-            tabela.appendChild(tr);
-        });
-    });
+ nome.value = "";
+ gmail.value = "";
+ cpf.value = "";
+ valor.value = "";
+ nf.value = "";
+}
+
+// LISTAR
+function carregarTabela(){
+ const mes = mesSelect.value;
+ const tabela = document.getElementById("tabela");
+ const totalMes = document.getElementById("totalMes");
+
+ tabela.innerHTML = "";
+ totalMes.innerText = "Total do mês: R$ 0,00";
+
+ if(currentRef) currentRef.off();
+
+ currentRef = db.ref("entradas/" + mes);
+ let total = 0;
+
+ currentRef.on("value", snap=>{
+  tabela.innerHTML = "";
+  total = 0;
+
+  snap.forEach(item=>{
+   const e = item.val();
+   total += Number(e.valor || 0);
+
+   const tr = document.createElement("tr");
+   tr.innerHTML = `
+    <td>${e.nome}</td>
+    <td>${e.gmail || ""}</td>
+    <td>${e.cpf}</td>
+    <td>${e.atividade}</td>
+    <td>${e.pagamento}</td>
+    <td>R$ ${Number(e.valor).toFixed(2)}</td>
+    <td>${e.data}</td>
+    <td>
+      <input class="nf-input" value="${e.nf || ""}"
+      onchange="updateNF('${mes}','${item.key}',this.value)">
+    </td>
+    <td>
+      <button class="delete-btn"
+      onclick="del('${mes}','${item.key}')">X</button>
+    </td>
+   `;
+   tabela.appendChild(tr);
+  });
+
+  totalMes.innerText = `Total do mês: R$ ${total.toFixed(2)}`;
+ });
+}
+
+// EDITAR NF
+function updateNF(mes,id,val){
+ db.ref(`entradas/${mes}/${id}`).update({ nf: val });
+}
+
+// EXCLUIR
+function del(mes,id){
+ db.ref(`entradas/${mes}/${id}`).remove();
 }
 
 carregarTabela();
-
-// EDITAR NF
-function updateNF(mes, id, novoValor) {
-    db.ref("entradas/" + mes + "/" + id).update({ nf: novoValor });
-}
-
-// EXCLUIR REGISTRO
-function del(mes, id) {
-    db.ref("entradas/" + mes + "/" + id).remove();
-}
 </script>
 
 </body>
 </html>
-
 
